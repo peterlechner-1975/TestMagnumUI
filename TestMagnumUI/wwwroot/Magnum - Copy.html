@@ -1,0 +1,1911 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>ExxonMobil - Magnum</title>
+    <link rel="icon" href="https://iem.ea.xom.com/-/media/Favicons/global/fav.ico" type="image/x-icon">
+
+
+
+    <meta name="theme-color" content="#7952b3">
+
+
+    <style>
+        a {
+            color: #f00;
+        }
+
+            a:hover {
+                color: #0f0;
+                cursor: pointer;
+            }
+
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        /* Dropdown Button */
+        .dropbtn {
+            background-color: #04AA6D;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+            /* Dropdown button on hover & focus */
+            .dropbtn:hover, .dropbtn:focus {
+                background-color: #3e8e41;
+            }
+
+        /* The search field */
+        .searchable {
+            box-sizing: border-box;
+            background-image: url('searchicon.png');
+            background-position: 14px 12px;
+            background-repeat: no-repeat;
+            font-size: 16px;
+            padding: 14px 20px 12px 45px;
+            border: none;
+            border-bottom: 1px solid #ddd;
+        }
+
+            /* The search field when it gets focus/clicked on */
+            .searchable:focus {
+                outline: 3px solid #ddd;
+            }
+
+        /* The container <div> - needed to position the dropdown content */
+        /*.dropdown {
+            position: relative;
+            display: inline-block;
+        }*/
+
+        .dropdown-menu {
+            min-width: 800px;
+        }
+
+        /* Dropdown Content (Hidden by Default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            min-width: 430px;
+            border: 1px solid #ddd;
+            z-index: 1;
+        }
+
+            /* Links inside the dropdown */
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                min-width: 430px;
+                display: block;
+            }
+
+                /* Change color of dropdown links on hover */
+                .dropdown-content a:hover {
+                    background-color: #f1f1f1
+                }
+
+        /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+        .show {
+            display: block;
+        }
+    </style>
+
+    <!-- Load plotly.js into the DOM -->
+    <script src='https://cdn.plot.ly/plotly-2.20.0.min.js'></script> <!-- Bootstrap core CSS -->
+    <link href="https://getbootstrap.com/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <link href="https://getbootstrap.com/docs/5.0/examples/dashboard/dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="js/Generic.js"></script>
+    <script src="js/Charts.js"></script>
+    <script src="js/Document.js"></script>
+    <!-- Custom styles for this template -->
+    <script>
+
+
+        $(function () {
+            $('#datetimepicker1').datetimepicker();
+        });
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl, option)
+        })
+        function paginate(array, page_size, page_number) {
+            // human-readable page numbers usually start with 1, so we reduce 1 in the first argument
+            return array.slice((page_number - 1) * page_size, page_number * page_size);
+        }
+
+        function fncNewLoan() {
+
+            $('#btnSaveAgreement').css('visibility', 'hidden');
+            $('#btnNextAgreement').css('visibility', 'visible');
+            let elem1 = document.querySelector('.newLoan');
+            elem1.innerHTML = "Loading New Loan";
+            $(".editLoan").each(function () {
+                this.innerHTML = "";
+            });
+
+            var sb = new GENERIC.STRINGBUILDER();
+
+
+            sb.append(' <div class="container-fluid no-padding">');
+            sb.append('<div class="row">');
+            sb.append('<div  class="col-sm">');
+            sb.append(GENERIC.DROPDOWNSEARCH("https://localhost:5001/api/v1/AGREEMENT_TYPE/all", "agreement_Type_Code", "Agreement Type", "agreement_Type_Code", 'newEntry'));
+            sb.append('</div>');
+            sb.append('<div  class="col-sm">');
+            sb.append('<div id="displaySelectedagreement_Type_Code"></div>');
+            sb.append('</div>');
+            sb.append('</div>');
+            sb.append('<div class="row">');
+            sb.append('<div  class="col-sm">');
+            sb.append(GENERIC.DROPDOWNSEARCH("https://localhost:5001/api/v1/COMPANY/all", "lender_RU_Code", "Lender", "company_Code"), 'newEntry');
+            sb.append('</div>');
+            sb.append('<div  class="col-sm">');
+            sb.append('<div id="displaySelectedlender_RU_Code"></div>');
+            sb.append('</div>');
+            sb.append('</div>');
+            sb.append('<div class="row">');
+            sb.append('<div  class="col-sm">');
+            sb.append(GENERIC.DROPDOWNSEARCH("https://localhost:5001/api/v1/COMPANY/all", "borrower_RU_Code", "Borrower", "company_Code"), 'newEntry');
+            sb.append('</div>');
+            sb.append('<div  class="col-sm">');
+            sb.append('<div id="displaySelectedborrower_RU_Code"></div>');
+            sb.append('</div>');
+            sb.append('</div>');
+            sb.append('<div class="row">');
+            sb.append('<div  class="col-sm"><div class="form-check form-switch">');
+            sb.append(' <input class="form-check-input newEntry" type="checkbox" id="historicalAgreement">');
+            sb.append(' <label class="form-check-label" for="historicalAgreement">Agreement is "Historical"</label>');
+            sb.append('</div></div>');
+            sb.append('<div  class="col-sm">');
+            sb.append('</div>');
+            sb.append('</div>');
+
+            let elem = document.querySelector('.newLoan');
+            elem.innerHTML = sb.toString();
+
+            sb.clear();
+
+            return false;
+        }
+
+        function PlaceNewOrderSetup(arrFields, divToAddTo, arr, theUrl) {
+            for (var i = 0; i < 1; i++) {
+                var obj = arr.data[i];
+
+                var body = '<table><tr>'
+                var counter = 1;
+                for (var key in obj) {
+                    var results = [];
+
+                    for (var i = 0, len = arrFields.length; i < len; i++) {
+                        if (arrFields[i][0] === key) {
+                            results.push(arrFields[i]);
+                        }
+                    }
+                    if (results.length == 1) {
+                        var value = obj[key];
+                        if (results[0][2] !== "yesno") {
+                            body += '<td class="align-top">' + results[0][1] + '</td>';
+                        }
+                        else {
+                            body += '<td></td>';
+                        }
+                        body += '<td>';
+
+                        let elem = document.getElementsByName(theUrl.split("/")[5].split('?')[0].toUpperCase() + "_" + key.toUpperCase());
+                        if (elem.length == 1 && key != "agreement_Code") {
+                            // body +='<div id="dd' +  elem[0].value.split("^")[1] + '"></div>';
+                            // body +='<button onclick="httpGetDropdown(\'https://localhost:5001/api/v1/' + elem[0].value.split("^")[0] + '/all\',\'' + elem[0].value.split("^")[1] + '\');" id="' + elem[0].value.split("^")[1] + '" value="..." />';
+                            body += DropdownSaveDraft('https://localhost:5001/api/v1/' + elem[0].value.split("^")[0] + '/all', elem[0].value.split("^")[1], value, key);
+                        }
+                        else {
+                            if (results[0][2] == null) {
+                                if (value == null) {
+                                    value = "";
+                                }
+                                body += '<input   value="' + value + '" class="form-control saveDraft" id="' + key + '"/>';
+                            }
+                            else {
+                                if (value == null) {
+                                    value = "";
+                                }
+                                if (results[0][2] == "multitext") {
+                                    body += '<textarea  class="form-control saveDraft" id="' + key + '"  rows = "5" cols = "80" >' + value + '</textarea > ';
+                                }
+                                else if (results[0][2] == "datetime") {
+                                    body += '  <div class="form-group"><div class="input-group date" id="datetimepicker1"><input type="text"  id="' + key + '" value="' + value + '" class="form-control saveDraft" /><span class="input-group-addon" ><span class="glyphicon glyphicon-calendar"></span></span > </div ></div > ';
+                                }
+                                else if (results[0][2] == "yesno") {
+                                    if (value == "N") {
+                                        body += '<div class="form-check form-switch"><input class="form-check-input saveDraft" type="checkbox" id="' + key + '"><label class="form-check-label" for="' + key + '">' + results[0][1] + '</label></div>';
+                                    }
+                                    else {
+                                        body += '<div class="form-check form-switch"><input class="form-check-input saveDraft" type="checkbox" id="' + key + '" checked><label class="form-check-label" for="' + key + '">' + results[0][1] + '</label></div>';
+                                    }
+                                }
+                                else if (results[0][2] == "checkbox") {
+                                    if (value == true) {
+                                        body += '<div class="form-check"><input class="form-check-input saveDraft" type="checkbox" value="" id="' + key + '" checked></div>';
+                                    }
+                                    else {
+                                        body += '<div class="form-check"><input class="form-check-input saveDraft" type="checkbox" value="" id="' + key + '"></div>';
+                                    }
+                                }
+                            }
+                        }
+                        body += '</td>';
+                        // if (counter % 3 == 0) {
+                        body += "</tr><tr>";
+                        //}
+                        counter += 1;
+                    }
+                }
+                body += '</tr></table>';
+            }
+
+            divToAddTo.innerHTML = "<br/><br/>" + body;
+        }
+        function fncSaveDraft() {
+            var objs = {};
+            $(".saveDraft").each(function () {
+                if (this.type == "checkbox" && $('#' + this.id).val() == "") {
+                    objs[[this.id]] = $('#' + this.id).is(":checked");
+                }
+                else {
+                    if ($('#' + this.id).val() == 'null') {
+                        objs[[this.id]] = null;
+                    }
+                    else if ($('#' + this.id).val() == 'on') {
+                        objs[[this.id]] = 'Y';
+                    }
+                    else if ($('#' + this.id).val() == 'off') {
+                        objs[[this.id]] = 'N';
+                    }
+                    else {
+                        objs[[this.id]] = $('#' + this.id).val();
+                    }
+                }
+            });
+            objs["Changed_At"] = new Date();
+            objs["Changed_By"] = "EA/plechne";
+            // alert(objs);
+            var oReq = new XMLHttpRequest();
+            oReq.onreadystatechange = function () {
+                if (oReq.readyState == XMLHttpRequest.DONE) {
+
+                    var arr = JSON.parse(oReq.responseText);
+                    if (arr.statusCode == 200) {
+                        GENERIC.TOASTSHOW(arr.data);
+                    }
+                    else {
+                        GENERIC.TOASTSHOW("Error:" + arr.errors[0]);
+                    }
+                }
+            }
+            oReq.open("PUT", "https://localhost:5001/api/v1/INTERCOMPANY_AGREEMENT", true);
+            oReq.setRequestHeader('Content-Type', 'application/json')
+            // oReq.setRequestHeader('Accept', '*/*') // accept all
+            oReq.send(JSON.stringify(objs));
+            return false;
+        }
+
+
+        function fncSaveNewDraft() {
+            var objs = {};
+            $(".newEntry").each(function () {
+                if (this.type == "checkbox") {
+                    objs[[this.id]] = $('#' + this.id).is(":checked");
+                }
+                else {
+                    if ($('#' + this.id).val() == 'null') {
+                        objs[[this.id]] = null;
+                    }
+                    else {
+                        objs[[this.id]] = $('#' + this.id).val();
+                    }
+                }
+            });
+
+            objs["Created_At"] = GENERIC.CURRENTDAY();
+            objs["Created_By"] = GENERIC.CREATEDBY();
+            var oReq = new XMLHttpRequest();
+            oReq.onreadystatechange = function () {
+                if (oReq.readyState == XMLHttpRequest.DONE) {
+
+                    var arr = JSON.parse(oReq.responseText);
+                    if (arr.statusCode == 200) {
+                        GENERIC.TOASTSHOW(arr.data);
+                        LoadSavedDraftForUser("https://localhost:5001/api/v1/INTERCOMPANY_AGREEMENT".replace("/all", "") + "?Agreement_Code=" + arr.data + '')
+                    }
+                    else {
+                        GENERIC.TOASTSHOW("Error:" + arr.errors[0]);
+                    }
+                }
+            }
+            oReq.open("POST", "https://localhost:5001/api/v1/MagnumCustom/SAVE_NEW_AGREEMENT", true);
+            oReq.setRequestHeader('Content-Type', 'application/json')
+            oReq.send(JSON.stringify(objs));
+            return false;
+        }
+
+        function AgreementExecutorAddFinco() {
+            var objs = {};
+            objs["lend_Borrow"] = "L";
+            objs["agreement_RU"] = $('#lender_RU_Code').val();
+            objs["Corporate_system_user_code"] = $('#fincoAuthorizedPersonal').val();
+            objs["Agreement_Code"] = $('#agreement_Code').val();
+            objs["changed_At"] = GENERIC.CURRENTDAY();
+            objs["changed_By"] = GENERIC.CREATEDBY();
+            var oReq = new XMLHttpRequest();
+            oReq.onreadystatechange = function () {
+                if (oReq.readyState == XMLHttpRequest.DONE) {
+
+                    var arr = JSON.parse(oReq.responseText);
+                    if (arr.statusCode == 200) {
+                        GENERIC.TOASTSHOW(arr.data);
+                        GENERIC.TABLESHOW("https://localhost:5001/api/v1/MagnumCustom/GetAgreementExecutor?Agreement_Code=" + $('#agreement_Code').val() + "&Type=L", 'loansFinco');
+
+                    }
+                    else {
+                        GENERIC.TOASTSHOW("Error:" + arr.errors[0]);
+                    }
+                }
+            }
+            oReq.open("POST", "https://localhost:5001/api/v1/AGREEMENT_EXECUTOR", true);
+            oReq.setRequestHeader('Content-Type', 'application/json')
+            oReq.send(JSON.stringify(objs));
+            return false;
+        }
+
+        function AgreementExecutorAddAffiliate() {
+            var objs = {};
+            objs["lend_Borrow"] = "B";
+            objs["agreement_RU"] = $('#borrower_RU_Code').val();
+            objs["Corporate_system_user_code"] = $('#affiliateAuthorizedPersonal').val();
+            objs["Agreement_Code"] = $('#agreement_Code').val();
+            objs["changed_At"] = GENERIC.CURRENTDAY();
+            objs["changed_By"] = GENERIC.CREATEDBY();
+            var oReq = new XMLHttpRequest();
+            oReq.onreadystatechange = function () {
+                if (oReq.readyState == XMLHttpRequest.DONE) {
+
+                    var arr = JSON.parse(oReq.responseText);
+                    if (arr.statusCode == 200) {
+                        GENERIC.TOASTSHOW(arr.data);
+                        GENERIC.TABLESHOW("https://localhost:5001/api/v1/MagnumCustom/GetAgreementExecutor?Agreement_Code=" + $('#agreement_Code').val() + "&Type=B", 'loansAffiliate');
+
+                    }
+                    else {
+                        GENERIC.TOASTSHOW("Error:" + arr.errors[0]);
+                    }
+                }
+            }
+            oReq.open("POST", "https://localhost:5001/api/v1/AGREEMENT_EXECUTOR", true);
+            oReq.setRequestHeader('Content-Type', 'application/json')
+            oReq.send(JSON.stringify(objs));
+            return false;
+        }
+        function LoadSavedDraftForUser(theUrl) {
+            $('#myTab2 li:nth-child(2) button').tab('show');
+
+            $('#btnSaveAgreement').css('visibility', 'visible');
+            $('#btnNextAgreement').css('visibility', 'hidden');
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+            var arr = JSON.parse(xmlHttp.responseText);
+            let elem = document.querySelector('.newLoan');
+            var keyMain = [["agreement_Code", "Agreement Code"], ["agreement_Type_Code", "Agreement Type"], ["lender_RU_Code", "Lender"], ["borrower_RU_Code", "Borrower"]];
+            PlaceNewOrderSetup(keyMain, elem, arr, theUrl);
+            elem = document.querySelector('.LoanAgreementDescription');
+            keyMain = [["external_Lender", "Supersedes"], ["purpose_Of_Agreement", "Short Description", "multitext"], ["agreement_Desc", "Detail Description", "multitext"]];
+            PlaceNewOrderSetup(keyMain, elem, arr, theUrl);
+            elem = document.querySelector('.LoanDates');
+            keyMain = [["agreement_Date", "Agreement Date", "datetime"], ["agreement_Effective_Date", "Effective Date", "datetime"], ["commitment_Period_Date", "Non-Call Date", "datetime"], ["termination_Date", "Termination Date", "datetime"]];
+            PlaceNewOrderSetup(keyMain, elem, arr, theUrl);
+            elem = document.querySelector('.LoanFacilityDetails');
+            keyMain = [["loan_Amount", "Loan Amount"], ["loan_Currency_Code", "Loan Currency"], ["min_Transaction_Amount", "Min Transaction Amount"], ["is_Guaranteed", "Is this Loan Guaranteed", "checkbox"], ["rate_Reset_Pay_Due_Date_Enum", "Reset Pay Due Date", "datetime"], ["spread_Update_Freq_Code", "Spread Update Frequency Code"], ["credit_Rating_Change_Constraints", "Credit Rating Change Constraints"], ["treasury_Center_Location_Code", "Treasury Center Location Code"], ["preferred_Jurisdiction_Code", "Preferred Jurisdiction Code"], ["preferred_Jurisdiction_Code", "Preferred Jurisdiction Code"], ["registration_Number", "Registration Number"], ["deposit_Amount", "Deposit Amount"], ["deposit_Currency_Code", "Deposit Currency Code"], ["guarantor_RU_Code", "Guarantor RU Code"], ["guarantor_Name", "Guarantor Name"]];
+            PlaceNewOrderSetup(keyMain, elem, arr, theUrl);
+
+            elem = document.querySelector('.LoanOther');
+            keyMain = [["unilateral_Terminat_Ind", "Unilateral Termination", "yesno"], ["automatic_Renew_Ind", "Automatic Renew", "yesno"], ["commitment_Fee_Date", "Commitment Fee Date", "datetime"], ["commitment_Fee_Amount", "Commitment Fee Amount"], ["commitment_Fee_Frequency", "Commitment Fee Frequency"], ["fINCO_Notice_Ind", "FINCO Notice"], ["eafE_or_PL_Ind", "EAFE or PL", "yesno"], ["iwT_Ind", "IWT", "yesno"], ["iwT_Rate", "IWT Rate"], ["covenants", "Covenants", "multitext"]];
+            PlaceNewOrderSetup(keyMain, elem, arr, theUrl);
+
+            elem = document.querySelector('.LoanContactInfoAndSignature');
+            keyMain = [["lender_Mailing_Address", "Lender Mailing Address"], ["borrower_Mailing_Address", "Borrower Mailing Address"], ["lender_alternate_company_name", "Lender Alternate Company Name"], ["borrower_alternate_company_name", "Borrower Alternate Company Name"]];
+            PlaceNewOrderSetup(keyMain, elem, arr, theUrl);
+
+            elem = document.querySelector('.LoanRepricingDetails');
+            keyMain = [["is_Standard_2Q_Repricing", "Does the Agreement have a standard 2Q repricing clause that allows for annual interest spread updates?", "checkbox"], ["is_Special_Handling", "Does repricing require special handling?", "checkbox"], ["is_MCR_Required", "Does repricing require a material change in credit rating?", "checkbox"], ["is_External_Bloomberg", "Is pricing based on external benchmarks not available via Bloomberg?", "checkbox"], ["repricing_SH_Comments", "Comments for special handling", "multitext"], ["repricing_2Q_Comments", "Comments if standard 2Q repricing does not appl", "multitext"]];
+            PlaceNewOrderSetup(keyMain, elem, arr, theUrl);
+
+
+            var finco = GENERIC.DROPDOWNSEARCH("https://localhost:5001/api/v1/MagnumCustom/GetAuthorizedPersonal?agreementCode=" + $('#agreement_Code').val(), "fincoAuthorizedPersonal", "Authorized Personal", "corporate_System_User_Guid", 'agreementExecutorAdd');
+            elem = document.querySelector('.fincoAuthorizedPeronal');
+            elem.innerHTML = finco;
+
+            var affiliate = GENERIC.DROPDOWNSEARCH("https://localhost:5001/api/v1/MagnumCustom/GetAuthorizedPersonal?agreementCode=" + $('#agreement_Code').val(), "affiliateAuthorizedPersonal", "Authorized Personal", "corporate_System_User_Guid", "agreementExecutorAdd");
+            elem = document.querySelector('.affiliateAuthorizedPeronal');
+            elem.innerHTML = affiliate;
+            GENERIC.TABLESHOW("https://localhost:5001/api/v1/MagnumCustom/GetAgreementExecutor?Agreement_Code=" + $('#agreement_Code').val() + "&Type=L", 'loansFinco');
+            GENERIC.TABLESHOW("https://localhost:5001/api/v1/MagnumCustom/GetAgreementExecutor?Agreement_Code=" + $('#agreement_Code').val() + "&Type=B", 'loansAffiliate');
+
+
+            DOCUMENT.DOCUMENTLIST();
+            var functionalGroup = httpGetDropdownCustomize('https://localhost:5001/api/v1/BUSINESS_FUNCTIONAL_GROUP/all', 'functional_Group_Code', 2, 'fileFunctionName', '');
+            functionalGroup += '<br/><h5>External Endorser</h5><input class="form-control" value="John Doe" id="external_Endorser" />';
+            let elem1 = document.querySelector('.showFunctionalGroups');
+            elem1.innerHTML = functionalGroup;
+        }
+        function httpGetById(theUrl) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+
+            var arr = JSON.parse(xmlHttp.responseText);
+            for (var i = 0; i < 1; i++) {
+                var obj = arr.data[i];
+
+                var body = '<table><tr>'
+                var counter = 1;
+                for (var key in obj) {
+                    var value = obj[key];
+                    body += '<td>' + key + '</td>';
+                    body += '<td>';
+
+                    let elem = document.getElementsByName(theUrl.split("/")[5].split('?')[0].toUpperCase() + "_" + key.toUpperCase());
+                    if (elem.length == 1 && key != "agreement_Code") {
+                        // body +='<div id="dd' +  elem[0].value.split("^")[1] + '"></div>';
+                        // body +='<button onclick="httpGetDropdown(\'https://localhost:5001/api/v1/' + elem[0].value.split("^")[0] + '/all\',\'' + elem[0].value.split("^")[1] + '\');" id="' + elem[0].value.split("^")[1] + '" value="..." />';
+                        body += httpGetDropdownV2('https://localhost:5001/api/v1/' + elem[0].value.split("^")[0] + '/all', elem[0].value.split("^")[1], value);
+                    }
+                    else {
+
+                        body += '<input class="entry" value="' + value + '" />';
+                    }
+                    body += '</td>';
+                    if (counter % 3 == 0) {
+                        body += "</tr><tr>";
+                    }
+                    counter += 1;
+                }
+                body += '</tr></table>';
+            }
+
+            let elem = document.querySelector('.newLoan');
+            elem.innerHTML = "";
+            elem.innerHTML = elem.innerHTML + body;
+        }
+        const paginate1 = function (array, index, size) {
+            // transform values
+            index = Math.abs(parseInt(index));
+            index = index > 0 ? index - 1 : index;
+            size = parseInt(size);
+            size = size < 1 ? 1 : size;
+
+            // filter
+            return [...(array.filter((value, n) => {
+                return (n >= (index * size)) && (n < ((index + 1) * size))
+            }))]
+        }
+        function httpGet(theUrl) {
+
+            let elem1 = document.querySelector('.add-here');
+            elem1.innerHTML = "Loading " + theUrl;
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+            //alert(xmlHttp.responseText);
+
+            var arrFull = JSON.parse(xmlHttp.responseText);
+            var body = ' <div class="table-responsive">';
+            body += ' <table class="table table-striped table-sm">';
+
+            arr = arrFull;// .slice(0,50);// paginate1(arrFull,1, 50)
+
+
+            for (var i = 0; i < 1; i++) {
+                //document.write("<br><br>array index: " + i);
+                var obj = arr.data[i];
+
+                body += '<thead><tr>'
+                for (var key in obj) {
+                    var value = obj[key];
+                    body += ' <th scope="col">' + key + '</th>';
+                }
+                body += '</tr></thead>';
+            }
+
+            body += '<tbody>';
+            var max = arr.data.length;
+            if (max > 50) {
+                max = 50;
+            }
+            for (var i = 0; i < max; i++) {
+                //document.write("<br><br>array index: " + i);
+                var obj = arr.data[i];
+
+                body += '<tr>'
+                var first = true;
+                var variable = "";
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (first) {
+                        first = false;
+                        variable = key + '=' + value;
+                    }
+                    body += ' <td><a href-"" onclick=httpGetById("' + theUrl.replace("/all", "") + "?" + variable + '");return false;">' + value + '</a></td>';
+                }
+                body += ' </tr>   ';
+            }
+            body += '</tbody>';
+            body += ' </table>';
+            body += ' </div>';
+
+            let elem = document.querySelector('.add-here');
+            elem.innerHTML = "";
+            elem.innerHTML = elem.innerHTML + body;
+
+            return false;
+        }
+        const groupAndSum = (array, property1, propertyToSum) => {
+            const tmp = {};
+            array.reduce((result, object) => {
+                const group = object[property1];
+                if (!tmp[group]) {
+                    tmp[group] = Object.assign({}, object);
+                    result.push(tmp[group]);
+                } else {
+                    tmp[group][propertyToSum] += object[propertyToSum];
+                }
+                return result;
+            }, []);
+            return tmp;
+        };
+
+        function httpGetDropdown(theUrl, column) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+
+            var arr = JSON.parse(xmlHttp.responseText);
+            var body = '<div class="dropdown">';
+            body += ' <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false"> Dropdown link</a><ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">';
+
+            var max = arr.data.length;
+            for (var i = 0; i < max; i++) {
+                var obj = arr.data[i];
+                var valueFull = "";
+                for (var key in obj) {
+                    var value = obj[key];
+                    //if (key.toUpperCase()==column){
+                    //}
+                    valueFull += value + " "
+                }
+                body += '<li><a class="dropdown-item" href="#">' + valueFull + '</a></li>';
+            }
+
+            body += ' </ul></div>';
+            document.getElementById("dd" + column).innerHTML = body;
+            return;
+        }
+
+        function httpGetDropdownV2(theUrl, column, valueSelected) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+
+            var arr = JSON.parse(xmlHttp.responseText);
+            var body = '<select class="form-select entry"  aria-label="Default select example">';
+
+            var max = arr.data.length;
+            for (var i = 0; i < max; i++) {
+                var obj = arr.data[i];
+                var valueFull = "";
+                var selected = " ";
+                var keyValue = "";
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (key.toUpperCase() == "CHANGED_BY") {
+                        continue;
+                    }
+                    if (key.toUpperCase() == "CHANGED_AT") {
+                        continue;
+                    }
+                    if (value == null) {
+                        continue;
+                    }
+                    if (key.toUpperCase() == column) {
+                        if (value == valueSelected) {
+                            selected = " selected ";
+                        }
+                        keyValue = value;
+                    }
+                    valueFull += value + " "
+                }
+
+                body += ' <option value="' + keyValue + '" ' + selected + '>' + valueFull + '</option>';
+            }
+
+            body += ' </select>';
+            return body;
+        }
+
+        function httpGetDropdownCustomize(theUrl, column, valueSelected, name, className) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+
+            var arr = JSON.parse(xmlHttp.responseText);
+            var body = '<select class="form-select ' + className + '"  id="' + name + '" aria-label="Default select example">';
+
+            var max = arr.data.length;
+            for (var i = 0; i < max; i++) {
+                var obj = arr.data[i];
+                var valueFull = "";
+                var selected = " ";
+                var keyValue = "";
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (key.toUpperCase() == "CHANGED_BY") {
+                        continue;
+                    }
+                    if (key.toUpperCase() == "CHANGED_AT") {
+                        continue;
+                    }
+                    if (value == null) {
+                        continue;
+                    }
+                    if (key.toUpperCase() == column.toUpperCase()) {
+                        if (value == valueSelected) {
+                            selected = " selected ";
+                        }
+                        keyValue = value;
+                    }
+                    valueFull += value + " "
+                }
+
+                body += ' <option value="' + keyValue + '" ' + selected + '>' + valueFull + '</option>';
+            }
+
+            body += ' </select>';
+            return body;
+        }
+
+        function DropdownSaveDraft(theUrl, column, valueSelected, keyValue) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+
+            var arr = JSON.parse(xmlHttp.responseText);
+            var body = '<select class="form-select saveDraft"  aria-label="Default select example" id="' + keyValue + '">';
+
+            var max = arr.data.length;
+            for (var i = 0; i < max; i++) {
+                var obj = arr.data[i];
+                var valueFull = "";
+                var selected = " ";
+                var first = true;
+                var pk = "";
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (key.toUpperCase() == "CHANGED_BY") {
+                        continue;
+                    }
+                    if (key.toUpperCase() == "CHANGED_AT") {
+                        continue;
+                    }
+                    if (value == null) {
+                        continue;
+                    }
+                    if (key.toUpperCase() == column) {
+                        if (value == valueSelected) {
+                            selected = " selected ";
+                        }
+                    }
+                    if (first) {
+                        pk = value;
+                        first = false;
+                    }
+                    valueFull += value + " "
+                }
+
+                body += ' <option value="' + pk + '" ' + selected + '>' + valueFull + '</option>';
+            }
+
+            body += ' </select>';
+            return body;
+        }
+
+        function ListLoans(a) {
+            fncShowInProgressLoansDemandDeposit(a.value.toString());
+        }
+
+        function GetGenericDropdown(theUrl, id) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+
+            var arr = JSON.parse(xmlHttp.responseText);
+            var body = '<select class="form-select entry"  aria-label="Default select example"  id="' + id + '">';
+            var column = "company_Code";
+            var val = "";
+            var max = arr.data.length;
+            body += ' <option></option>';
+            for (var i = 0; i < max; i++) {
+                var obj = arr.data[i];
+                var valueFull = "";
+                var selected = " ";
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (key.toUpperCase() == "CHANGED_BY") {
+                        continue;
+                    }
+                    if (key.toUpperCase() == "CHANGED_AT") {
+                        continue;
+                    }
+                    if (key.toUpperCase() == column.toUpperCase()) {
+                        val = value;
+                    }
+                    valueFull += value + " "
+                }
+
+                body += ' <option value="' + val + '" ' + selected + '>' + valueFull + '</option>';
+            }
+
+            body += ' </select>';
+
+            return body;
+        }
+        /* When the user clicks on the button,
+toggle between hiding and showing the dropdown content */
+        function myFunction(idName) {
+            document.getElementById("myDropdown" + idName.id).classList.toggle("show");
+        }
+
+        function filterFunction(input) {
+            var input, filter, ul, li, a, i;
+            filter = input.value.toUpperCase();
+            div = document.getElementById("myDropdown" + input.id);
+            a = div.getElementsByTagName("a");
+            for (i = 0; i < a.length; i++) {
+                txtValue = a[i].textContent || a[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    a[i].style.display = "";
+                } else {
+                    a[i].style.display = "none";
+                }
+            }
+        }
+        function GetGenericDropdownSearch(theUrl, idName, caption) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+
+            var arr = JSON.parse(xmlHttp.responseText);
+            var body = '<div class="dropdown"> <button onclick="myFunction(' + idName + ')" class="dropbtn">Select ' + caption + '</button>';
+            body += '<div id="myDropdown' + idName + '" class="dropdown-content"><input type="text" placeholder="Search.." id="search' + idName + '" onkeyup="filterFunction(this)"/>';
+
+            var column = "company_Code";
+            var val = "";
+            var max = arr.data.length;
+            // body += ' <option></option>';
+            for (var i = 0; i < max; i++) {
+                var obj = arr.data[i];
+                var valueFull = "";
+                var selected = " ";
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (key.toUpperCase() == "CHANGED_BY") {
+                        continue;
+                    }
+                    if (key.toUpperCase() == "CHANGED_AT") {
+                        continue;
+                    }
+                    if (key.toUpperCase() == column.toUpperCase()) {
+                        val = value;
+                    }
+                    valueFull += value + " "
+                }
+
+                body += '<a href="#' + val + '">' + valueFull + '</a>';// ' <option value="' + val + '" ' + selected + '>' + valueFull + '</option>';
+            }
+
+            body += ' </div></div>';
+
+            return body;
+        }
+        function fncSelectDropdown(idName, val, idIndex, className) {
+            $("#displaySelected" + idName)[0].innerHTML = val + "<input type='hidden' id='" + idName + "' class='" + className + "' value='" + idIndex + "'/>";
+
+        }
+        function setFocusToTextBox(id) {
+
+            setTimeout(function () {
+                document.getElementById(id).focus();
+            }, 100);
+        }
+
+        function GetDropdownSearchLookup() {
+            var theUrl = "https://localhost:5001/api/v1/COMPANY/all";
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+
+            var arr = JSON.parse(xmlHttp.responseText);
+            var body = '<select class="form-select entry"  aria-label="Default select example" onchange="ListLoans(this);">';
+            var column = "company_Code";
+            var val = "";
+            var max = arr.data.length;
+            for (var i = 0; i < max; i++) {
+                var obj = arr.data[i];
+                var valueFull = "";
+                var selected = " ";
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (key.toUpperCase() == "CHANGED_BY") {
+                        continue;
+                    }
+                    if (key.toUpperCase() == "CHANGED_AT") {
+                        continue;
+                    }
+                    if (key.toUpperCase() == column.toUpperCase()) {
+                        val = value;
+                    }
+                    valueFull += value + " "
+                }
+
+                body += ' <option value="' + val + '" ' + selected + '>' + valueFull + '</option>';
+            }
+
+            body += ' </select>';
+            let elem1 = document.querySelector('.LenderLookUp');
+            elem1.innerHTML = body;
+            return;
+        }
+        function fncShowInProgressLoans() {
+
+            GENERIC.TOASTSHOW("Loading In Progress Loans..");
+
+            let elem1 = document.querySelector('.currentLoans');
+            elem1.innerHTML = "Loading  Current Loans ";
+            var theUrl = "https://localhost:5001/api/v1/MagnumCustom/CurrentLoans";
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+            //alert(xmlHttp.responseText);
+
+            var arrFull = JSON.parse(xmlHttp.responseText);
+            var body = ' <div class="table-responsive">';
+            body += ' <table class="table table-striped table-sm" id="tableInProgress">';
+
+            arr = arrFull;// .slice(0,50);// paginate1(arrFull,1, 50)
+
+
+            for (var i = 0; i < 1; i++) {
+                //document.write("<br><br>array index: " + i);
+                var obj = arr.data[i];
+
+                body += '<thead><tr>'
+                for (var key in obj) {
+                    var value = obj[key];
+                    body += ' <th scope="col">' + key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ") + '</th>';
+                }
+                body += '</tr></thead>';
+            }
+
+            body += '<tbody id="tableInProgressBody">';
+            var max = arr.data.length;
+            if (max > 50) {
+                max = 50;
+            }
+            for (var i = 0; i < max; i++) {
+                //document.write("<br><br>array index: " + i);
+                var obj = arr.data[i];
+
+                body += '<tr>'
+                var first = true;
+                var variable = "";
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (first) {
+                        first = false;
+                        variable = key + '=' + value;
+                    }
+                    body += ' <td><a href-""  onclick="LoadSavedDraftForUser(\'' + "https://localhost:5001/api/v1/INTERCOMPANY_AGREEMENT".replace("/all", "") + "?" + variable + '\');return false;">' + value + '</a></td>';
+                }
+                body += ' </tr>   ';
+            }
+            body += '</tbody>';
+            body += ' </table>';
+            body += ' </div>';
+            let elem = document.querySelector('.currentLoans');
+            elem.innerHTML = "";
+            elem.innerHTML = elem.innerHTML + body;
+
+        }
+
+
+        function fncShowDrafts() {
+
+            GENERIC.TOASTSHOW("Loading In Progress Loans..");
+
+            let elem1 = document.querySelector('.currentDrafts');
+            elem1.innerHTML = "Loading  Current Loans ";
+            var theUrl = "https://localhost:5001/api/v1/MagnumCustom/LoadDrafts";
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+            //alert(xmlHttp.responseText);
+
+            var arrFull = JSON.parse(xmlHttp.responseText);
+            var body = ' <div class="table-responsive" id="tableDrafts">';
+            body += ' <table class="table table-striped table-sm">';
+            arr = arrFull;// .slice(0,50);// paginate1(arrFull,1, 50)
+
+
+            for (var i = 0; i < 1; i++) {
+                //document.write("<br><br>array index: " + i);
+                var obj = arr.data[i];
+
+                body += '<thead><tr>'
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (key == "agreement_Code") {
+                        continue;
+                    }
+                    body += ' <th scope="col">' + key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ") + '</th>';
+                }
+                body += '<th scope="col"></th>';
+                body += '</tr></thead>';
+            }
+
+            body += '<tbody  id="tableDraftsBody">';
+            var max = arr.data.length;
+            if (max > 50) {
+                max = 50;
+            }
+            for (var i = 0; i < max; i++) {
+                //document.write("<br><br>array index: " + i);
+                var obj = arr.data[i];
+
+                body += '<tr>'
+                var first = true;
+                var variable = "";
+                for (var key in obj) {
+                    var value = obj[key]
+                    if (value != null) {
+                        value = value.replace("T00:00:00", "");
+                    }
+
+
+                    if (first) {
+                        first = false;
+                        variable = key + '=' + value;
+                    }
+                    if (key == "agreement_Code") {
+                        continue;
+                    }
+                    body += ' <td><a href-"" onclick="LoadSavedDraftForUser(\'' + "https://localhost:5001/api/v1/INTERCOMPANY_AGREEMENT".replace("/all", "") + "?" + variable + '\');return false;">' + value + '</a></td>';
+                }
+                body += ' </tr>   ';
+            }
+            body += '</tbody>';
+            body += ' </table>';
+            body += ' </div>';
+            let elem = document.querySelector('.currentDrafts');
+            elem.innerHTML = "";
+            elem.innerHTML = elem.innerHTML + body;
+
+        }
+
+
+        function fncShowInProgressLoansDemandDeposit(LenderCode) {
+
+            GENERIC.TOASTSHOW("Loading Demand Deposit..");
+
+            let elem1 = document.querySelector('.currentLoans');
+            elem1.innerHTML = "Loading  Current Loans ";
+            var theUrl = "https://localhost:5001/api/v1/MagnumCustom/CurrentLoansForLender?LenderCode=" + LenderCode;
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+            //alert(xmlHttp.responseText);
+
+            var arrFull = JSON.parse(xmlHttp.responseText);
+            var body = ' <div class="table-responsive">';
+            body += ' <table class="table table-striped table-sm">';
+
+            arr = arrFull;// .slice(0,50);// paginate1(arrFull,1, 50)
+
+
+            for (var i = 0; i < 1; i++) {
+                //document.write("<br><br>array index: " + i);
+                var obj = arr.data.demandDeposit[i];
+
+                body += '<thead><tr>'
+                for (var key in obj) {
+                    var value = obj[key];
+                    body += ' <th scope="col">' + key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ") + '</th>';
+                }
+                body += '</tr></thead>';
+            }
+
+            body += '<tbody>';
+            var max = arr.data.demandDeposit.length;
+
+            for (var i = 0; i < max; i++) {
+                var obj = arr.data.demandDeposit[i];
+
+                body += '<tr>'
+                var first = true;
+                var variable = "";
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (first) {
+                        first = false;
+                        variable = value;
+                    }
+                    body += ' <td><a href-"" onclick=fncShowInProgressLoansDemandDepositDetail("' + variable + '");return false;">' + value + '</a></td>';
+                }
+                body += ' </tr>   ';
+            }
+            body += '</tbody>';
+            body += ' </table>';
+            body += ' </div>';
+            let elem = document.querySelector('.currentLoansDemandDeposit');
+            elem.innerHTML = "";
+            elem.innerHTML = elem.innerHTML + body;
+
+
+
+            body = ' <div class="table-responsive">';
+            body += ' <table class="table table-striped table-sm">';
+            for (var i = 0; i < 1; i++) {
+                var obj = arr.data.loadTermRevolvingLoanTimedDeposit[i];
+
+                body += '<thead><tr>'
+                for (var key in obj) {
+                    var value = obj[key];
+                    body += ' <th scope="col">' + key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, " ") + '</th>';
+                }
+                body += '</tr></thead>';
+            }
+
+            body += '<tbody>';
+            var max = arr.data.loadTermRevolvingLoanTimedDeposit.length;
+
+            for (var i = 0; i < max; i++) {
+                var obj = arr.data.loadTermRevolvingLoanTimedDeposit[i];
+
+                body += '<tr>'
+                var first = true;
+                var variable = "";
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (first) {
+                        first = false;
+                        variable = key + '=' + value;
+                    }
+                    body += ' <td><a href-"" onclick=httpGetById("' + theUrl.replace("/all", "") + "?" + variable + '");return false;">' + value + '</a></td>';
+                }
+                body += ' </tr>   ';
+            }
+            body += '</tbody>';
+            body += ' </table>';
+            body += ' </div>';
+            elem = document.querySelector('.currentLoansTermRevolvingLoanTimedDeposit');
+            elem.innerHTML = "";
+            elem.innerHTML = elem.innerHTML + body;
+
+        }
+
+        // Your JavaScript code
+        function displayPdf(pdfData) {
+            const pdfContainer = document.getElementById('pdfContainer');
+
+            // Convert the byte array to a Blob
+            const pdfBlob = new Blob([pdfData], { type: 'application/pdf' });
+
+            // Create an object URL for the Blob
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+
+            // Create an embed element to display the PDF
+            const embedElement = document.createElement('embed');
+            embedElement.src = pdfUrl;
+            embedElement.width = '100%';
+            embedElement.height = '600px';
+
+            // Append the embed element to the container
+            pdfContainer.appendChild(embedElement);
+        }
+
+        function fncDetailsProcess(obj, caption) {
+            var body = "";
+            for (var i = 0; i < 1; i++) {
+                //document.write("<br><br>array index: " + i);
+                if (caption == null) {
+                    caption = "";
+                }
+                body += '<thead><tr><caption><b>' + caption + '</b></caption>'
+                for (var key in obj) {
+                    var value = obj[key];
+                    body += ' <th scope="col">' + key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, "&nbsp;") + '</th>';
+                }
+                body += '</tr></thead>';
+            }
+            body += '<tbody>';
+            var max = 1;// arr.data.chilD_INTERCOMPANY_AGREEMENT.length;
+            for (var i = 0; i < max; i++) {
+                body += '<tr>'
+                var first = true;
+                var variable = "";
+                for (var key in obj) {
+                    var value = obj[key];
+                    if (key == "signed_Agreement_Doc") {
+
+                    } else {
+                        body += ' <td>' + value + '</td>';
+                    }
+                    if (first) {
+                        first = false;
+                        variable = key + '=' + value;
+                    }
+                }
+                body += ' </tr>   ';
+            }
+            body += '</tbody>';
+            return body;
+        }
+        function fncShowInProgressLoansDemandDepositDetail(Agreement_Code) {
+
+            GENERIC.TOASTSHOW("Loading Deposit Details..");
+
+            let elem1 = document.querySelector('.currentLoans');
+            elem1.innerHTML = "Loading  Current Loans ";
+            var theUrl = "https://localhost:5001/api/v1/MagnumCustom/ViewSignedAgreementDetail?Agreement_Code=" + Agreement_Code;
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", theUrl, false); // false for synchronous request
+            xmlHttp.send(null);
+            //alert(xmlHttp.responseText);
+            //  return;
+            var arrFull = JSON.parse(xmlHttp.responseText);
+            var body = ' <div class="table-responsive">';
+            body += ' <table class="table table-striped table-sm">';
+            body += fncDetailsProcess(arr.data.intercompanY_AGREEMENT, 'Agreement');
+
+            body += ' </table>';
+            body += ' <table class="table table-striped table-sm">';
+
+            arr = arrFull;// .slice(0,50);// paginate1(arrFull,1, 50)
+            body += fncDetailsProcess(arr.data.chilD_INTERCOMPANY_AGREEMENT, 'Child Agreement');
+
+            body += ' </table>';
+            body += ' <table class="table table-striped table-sm">';
+            body += fncDetailsProcess(arr.data.agreemenT_INTEREST_RATE, 'Interest Rate');
+            body += ' </table>';
+            body += ' <table class="table table-striped table-sm">';
+            body += fncDetailsProcess(arr.data.agreemenT_INTEREST_RATE_BY_CODE, 'Interest Rate Code');
+            body += ' </table>';
+            body += ' <table class="table table-striped table-sm">';
+            body += fncDetailsProcess(arr.data.agreemenT_KEY_DATE, 'Key Dates');
+            body += ' </table>';
+            body += ' <table class="table table-striped table-sm">';
+            body += fncDetailsProcess(arr.data.borrowerAuthorizedPersons, 'Borrower');
+            body += ' </table>';
+            body += ' <table class="table table-striped table-sm">';
+            body += fncDetailsProcess(arr.data.lenderAuthorizedPersons, 'Leander');
+            body += ' </table>';
+            body += ' </div>';
+            let elem = document.querySelector('.popup');
+            elem.innerHTML = "";
+            elem.innerHTML = elem.innerHTML + body;
+
+            let myModal = document.querySelector('.modal');
+
+            myModal.style.display = "block";
+            myModal.style.paddingRight = "17px";
+            myModal.className = "modal fade show";
+
+        }
+        function _arrayBufferToBase64(buffer) {
+            var binary = '';
+            var bytes = new Uint8Array(buffer);
+            var len = bytes.byteLength;
+            for (var i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
+        function fncCloseModal() {
+            let myModal = document.querySelector('.modal');
+            myModal.style.display = "none";
+            myModal.className = "modal fade";
+
+        }
+        function AJAXSubmit(oFormElement) {
+            var oReq = new XMLHttpRequest();
+            var formData = new FormData();
+
+            for (var file in document.getElementById("documentFiles").files) {
+                formData.append("documentFiles", file, file.name);
+            }
+            var headers = { 'Content-Type': file.type };
+            var params = { 'userDetails': JSON.stringify(file.userDetails) };
+            var config = { headers, params };
+
+            oReq.onload = function (e) {
+                oFormElement.elements.namedItem("result").value =
+                    'Result: ' + this.status + ' ' + this.statusText;
+            };
+            oReq.open("post", oFormElement.action, config);
+            oReq.send(formData);
+        }
+        $(document).ready(function () {
+
+            fncShowDrafts();
+
+            GENERIC.TOASTSHOW("Loading Magnum..");
+
+
+            MAGNUMCHART.SHOWPIECHART();
+            MAGNUMCHART.SHOWBARCHART();
+            MAGNUMCHART.SHOWSCATTEREDCHART();
+            GENERIC.SEARCHTABLE("myDrafts", "tableDraftsBody");
+            GENERIC.SEARCHTABLE("myInProgress", "tableInProgressBody");
+        });
+
+    </script>
+
+</head>
+<body data-spy="scroll">
+
+    <header class="navbar navbar-dark sticky-top bg-#FE000C flex-md-nowrap p-0 shadow" style="background-color: #FE000C">
+        <a class="navbar col-md-3 col-lg-2 me-0 px-3" href="#"><img src="exxonmobil_logo_black.png" WIDTH="200px" title="Welcome to Magnum AF"></a>
+        <!--<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">  Proprietary-->
+        <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+                <a class="nav-link px-3" href="#">Sign out</a>
+            </div>
+        </div>
+    </header>
+
+    <div>
+
+        <!--<nav id="sidebarMenu" class="col-md-4 col-lg-2 d-md-block bg-light sidebar collapse toggled" style="display:none">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column nav text-nowrap flex-nowrap" style="overflow-x: auto;height:800px">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">
+                            <span data-feather="home"></span>
+                            Dashboard
+                        </a>
+                    </li>
+
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_INTEREST_RATE/all');return false;"><span data-feather="file"></span>AGREEMENT_INTEREST_RATE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_SPREAD_DURATION/all');return false;"><span data-feather="file"></span>AGREEMENT_SPREAD_DURATION</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/INTEREST_RATE_PERIOD/all');return false;"><span data-feather="file"></span>INTEREST_RATE_PERIOD</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_TEXT/all');return false;"><span data-feather="file"></span>AGREEMENT_TEXT</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/PAIRING_SEQ_TAX_RATE/all');return false;"><span data-feather="file"></span>PAIRING_SEQ_TAX_RATE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_KEY_DATE/all');return false;"><span data-feather="file"></span>AGREEMENT_KEY_DATE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/PARENT_AGREEMENT_PARTICIPATION/all');return false;"><span data-feather="file"></span>PARENT_AGREEMENT_PARTICIPATION</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_BANK_ACCOUNT/all');return false;"><span data-feather="file"></span>AGREEMENT_BANK_ACCOUNT</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_ENDORSEMENT/all');return false;"><span data-feather="file"></span>AGREEMENT_ENDORSEMENT</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/RELATED_AGREEMENT/all');return false;"><span data-feather="file"></span>RELATED_AGREEMENT</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_TYPE/all');return false;"><span data-feather="file"></span>AGREEMENT_TYPE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/TAX/all');return false;"><span data-feather="file"></span>TAX</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/STEWARD_ORGANIZATION/all');return false;"><span data-feather="file"></span>STEWARD_ORGANIZATION</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/INTERCOMPANY_AGREEMENT_GUARANTEE/all');return false;"><span data-feather="file"></span>INTERCOMPANY_AGREEMENT_GUARANTEE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/BENCHMARK_RATE/all');return false;"><span data-feather="file"></span>BENCHMARK_RATE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/PAIRING_TAX_RATE/all');return false;"><span data-feather="file"></span>PAIRING_TAX_RATE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/BPOW_POSITION_ROLE/all');return false;"><span data-feather="file"></span>BPOW_POSITION_ROLE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/OWNERSHIP_COMPANY/all');return false;"><span data-feather="file"></span>OWNERSHIP_COMPANY</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/COMPANY/all');return false;"><span data-feather="file"></span>COMPANY</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/COMPANY_LEVEL/all');return false;"><span data-feather="file"></span>COMPANY_LEVEL</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/Benchmark_Interest_Rate_table/all');return false;"><span data-feather="file"></span>Benchmark_Interest_Rate_table</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/EXCHANGE_RATE_SOURCE/all');return false;"><span data-feather="file"></span>EXCHANGE_RATE_SOURCE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/EXTENDED_TAX_TYPE/all');return false;"><span data-feather="file"></span>EXTENDED_TAX_TYPE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/CURRENCY_tmp/all');return false;"><span data-feather="file"></span>CURRENCY_tmp</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/CREDIT_RATING/all');return false;"><span data-feather="file"></span>CREDIT_RATING</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/Benchmark_Interest_Rate_table_mirror/all');return false;"><span data-feather="file"></span>Benchmark_Interest_Rate_table_mirror</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/BUSINESS_DIVISION/all');return false;"><span data-feather="file"></span>BUSINESS_DIVISION</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/INTEREST_RATE_TYPE/all');return false;"><span data-feather="file"></span>INTEREST_RATE_TYPE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/Enterprise_Directory/all');return false;"><span data-feather="file"></span>Enterprise_Directory</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/TREASURY_CENTER_LOCATION/all');return false;"><span data-feather="file"></span>TREASURY_CENTER_LOCATION</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/LANGUAGE/all');return false;"><span data-feather="file"></span>LANGUAGE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/FREQUENCY/all');return false;"><span data-feather="file"></span>FREQUENCY</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/LIBOR_BENCHMARK/all');return false;"><span data-feather="file"></span>LIBOR_BENCHMARK</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/OVERRIDE_FLAG/all');return false;"><span data-feather="file"></span>OVERRIDE_FLAG</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/TAX_CONSOLIDATION_GROUP/all');return false;"><span data-feather="file"></span>TAX_CONSOLIDATION_GROUP</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/BUSINESS_FUNCTIONAL_GROUP/all');return false;"><span data-feather="file"></span>BUSINESS_FUNCTIONAL_GROUP</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/TAX_TYPE/all');return false;"><span data-feather="file"></span>TAX_TYPE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/Benchmark_Interest_Rate_Upload/all');return false;"><span data-feather="file"></span>Benchmark_Interest_Rate_Upload</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/TAX_USE/all');return false;"><span data-feather="file"></span>TAX_USE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/TEXT_SUBJECT_GROUP/all');return false;"><span data-feather="file"></span>TEXT_SUBJECT_GROUP</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_EXECUTOR/all');return false;"><span data-feather="file"></span>AGREEMENT_EXECUTOR</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/USER_ROLE/all');return false;"><span data-feather="file"></span>USER_ROLE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/ENDORSEMENT_STATUS/all');return false;"><span data-feather="file"></span>ENDORSEMENT_STATUS</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_CLASSIFICATION/all');return false;"><span data-feather="file"></span>AGREEMENT_CLASSIFICATION</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/TAX_JURISDICTION/all');return false;"><span data-feather="file"></span>TAX_JURISDICTION</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/INTERCOMPANY_AGREEMENT/all');return false;"><span data-feather="file"></span>INTERCOMPANY_AGREEMENT</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_TEMPLATE_VERSION/all');return false;"><span data-feather="file"></span>AGREEMENT_TEMPLATE_VERSION</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/SEARCH_AGREEMENT_LATEST_INFO/all');return false;"><span data-feather="file"></span>SEARCH_AGREEMENT_LATEST_INFO</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/DATAFLEX_REPORTING_UNIT_EXTERNAL_BORROWING/all');return false;"><span data-feather="file"></span>DATAFLEX_REPORTING_UNIT_EXTERNAL_BORROWING</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/HISTORY_FIX_AGREEMENT/all');return false;"><span data-feather="file"></span>HISTORY_FIX_AGREEMENT</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/CORPORATE_SYSTEM_USER/all');return false;"><span data-feather="file"></span>CORPORATE_SYSTEM_USER</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/DATAFLEX_REPORTING_UNIT/all');return false;"><span data-feather="file"></span>DATAFLEX_REPORTING_UNIT</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/BENCHMARK_INTEREST_RATE/all');return false;"><span data-feather="file"></span>BENCHMARK_INTEREST_RATE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/CURRENCY/all');return false;"><span data-feather="file"></span>CURRENCY</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/BPOW_SHAREHOLDER/all');return false;"><span data-feather="file"></span>BPOW_SHAREHOLDER</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_CONTACTINFO/all');return false;"><span data-feather="file"></span>AGREEMENT_CONTACTINFO</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/AGREEMENT_SIGNATORIES/all');return false;"><span data-feather="file"></span>AGREEMENT_SIGNATORIES</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/BPOW_PERSONNEL/all');return false;"><span data-feather="file"></span>BPOW_PERSONNEL</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/FOREX_RATE/all');return false;"><span data-feather="file"></span>FOREX_RATE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/CURRENCY_TEXT/all');return false;"><span data-feather="file"></span>CURRENCY_TEXT</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/COUNTRY/all');return false;"><span data-feather="file"></span>COUNTRY</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/BANK_ACCOUNT/all');return false;"><span data-feather="file"></span>BANK_ACCOUNT</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/PAIRING_CORP_TAX_RATE/all');return false;"><span data-feather="file"></span>PAIRING_CORP_TAX_RATE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/BUSINESS_LINE/all');return false;"><span data-feather="file"></span>BUSINESS_LINE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/RU_BUSINESS_LINE/all');return false;"><span data-feather="file"></span>RU_BUSINESS_LINE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/BPOW/all');return false;"><span data-feather="file"></span>BPOW</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/COUNTRY_TAX_RATE/all');return false;"><span data-feather="file"></span>COUNTRY_TAX_RATE</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/BANK/all');return false;"><span data-feather="file"></span>BANK</a> </li>
+                    <li class="nav-item"><a class="nav-link" href="" onclick="httpGet('https://localhost:5001/api/v1/RU_CREDIT_RATING/all');return false;"><span data-feather="file"></span>RU_CREDIT_RATING</a> </li>
+
+
+
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Saved reports</span>
+                        <a class="link-secondary" href="#" aria-label="Add a new report">
+                            <span data-feather="plus-circle"></span>
+                        </a>
+                    </h6>
+                    <ul class="nav flex-column mb-2">
+                        <li class="nav-item">
+                            <a class="nav-link" href="" onclick="showPieChart('https://localhost:5001/api/v1/INTERCOMPANY_AGREEMENT/all');return false;">
+                                <span data-feather="file-text"></span>
+                                Intercompany Agreement Pie Chart
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="" onclick="showBarChart('https://localhost:5001/api/v1/INTERCOMPANY_AGREEMENT/all');return false;">
+                                <span data-feather="file-text"></span>
+                                Intercompany Agreement Bar Chart
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span data-feather="file-text"></span>
+                                Social engagement
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span data-feather="file-text"></span>
+                                Year-end sale
+                            </a>
+                        </li>
+                    </ul>
+            </div>
+            </div>
+        </nav>-->
+    </div>
+    <main class="col-md-8 ms-sm-auto col-lg-12 px-md-3">
+        <!--<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">Dashboard</h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                    <span data-feather="calendar"></span>
+                    This week
+                </button>
+            </div>
+        </div>-->
+        <ul class="nav nav-tabs" id="myTab2" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link  " id="newLoan-tab" data-bs-toggle="tab" data-bs-target="#newLoan" type="button" role="tab" aria-controls="newLoan" aria-selected="false" onclick="fncNewLoan(); return false;">New</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="currentLoans-tab" data-bs-toggle="tab" data-bs-target="#currentLoans" type="button" role="tab" aria-controls="currentLoans" aria-selected="false" onclick='fncShowInProgressLoans();return false;'>In Progress</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false" onclick='GetDropdownSearchLookup();return false;'>Lookup</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <br />
+                <div class="container-fluid no-padding" style="margin: 0 -15px;">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="container overflow-hidden">
+                                <div class="row gy-5">
+                                    <div class="col-12">
+                                        <div class="p-3 border bg-light"><h5>Upcoming Dates</h5></div>
+                                    </div>
+                                </div>
+                                <div class="row gy-5">
+                                    <div class="col-12">
+                                        <div class="p-3 border bg-light"><h5>Drafts</h5> <input class="form-control searchable" id="myDrafts" type="text" placeholder="Search.."></div>
+
+                                        <div class="currentDrafts">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row gy-5">
+                                    <div class="col-12">
+                                        <div class="p-3 border bg-light"><h5>Submitted Documents</h5></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <canvas id="myChart" style="width:100%;max-width:900px">fhfghfghgf</canvas>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <canvas id="myBarChart" style="width:100%;max-width:900px"> </canvas>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <canvas id="myScatteredChart" style="width:100%;max-width:900px"> </canvas>
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="newLoan" role="tabpanel" aria-labelledby="newLoan-tab">
+                <div class="container-fluid no-padding">
+                    <div class="row">
+                        <div class="col-lg">
+                            <br />
+                            <div class="newLoan">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-11"></div>
+                    <div class="col-sm-1"> <button type="button" class="btn btn-primary" onclick="fncSaveNewDraft(); return false;" id="btnNextAgreement">Next==></button></div>
+                </div>
+                <ul class="nav nav-tabs" id="myTabLoans" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="LoanAgreementDescription-tab" data-bs-toggle="tab" data-bs-target="#LoanAgreementDescription" type="button" role="tab" aria-controls="LoanAgreementDescription" aria-selected="true">Agreement Description</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="LoanDates-tab" data-bs-toggle="tab" data-bs-target="#LoanDates" type="button" role="tab" aria-controls="LoanDates" aria-selected="false">Dates</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="LoanFacilityDetails-tab" data-bs-toggle="tab" data-bs-target="#LoanFacilityDetails" type="button" role="tab" aria-controls="LoanFacilityDetails" aria-selected="false">Facility Details</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="LoanOther-tab" data-bs-toggle="tab" data-bs-target="#LoanOther" type="button" role="tab" aria-controls="LoanOther" aria-selected="false">Other Terms</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="LoanContactInfoAndSignature-tab" data-bs-toggle="tab" data-bs-target="#LoanContactInfoAndSignature" type="button" role="tab" aria-controls="LoanContactInfoAndSignature" aria-selected="false">Contact Info And Signature</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="LoanAuthorizedPerson-tab" data-bs-toggle="tab" data-bs-target="#LoanAuthorizedPerson" type="button" role="tab" aria-controls="LoanAuthorizedPerson" aria-selected="false">Authorized Person</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="LoanKeyDates-tab" data-bs-toggle="tab" data-bs-target="#LoanKeyDates" type="button" role="tab" aria-controls="LoanKeyDates" aria-selected="false">Key Dates</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="LoanFunctionalReview-tab" data-bs-toggle="tab" data-bs-target="#LoanFunctionalReview" type="button" role="tab" aria-controls="LoanFunctionalReview" aria-selected="false">Functonal Review</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="LoanRepricingDetails-tab" data-bs-toggle="tab" data-bs-target="#LoanRepricingDetails" type="button" role="tab" aria-controls="LoanRepricingDetails" aria-selected="false">Repricing Details</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="LoanUploadPublish-tab" data-bs-toggle="tab" data-bs-target="#LoanUploadPublish" type="button" role="tab" aria-controls="LoanUploadPublish" aria-selected="false">Upload/Publish</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContentLoans">
+                    <div class="tab-pane fade show active" id="LoanAgreementDescription" role="tabpanel" aria-labelledby="LoanAgreementDescription-tab">
+                        <div class="LoanAgreementDescription editLoan">Agreement Description </div>
+                    </div>
+                    <div class="tab-pane fade" id="LoanDates" role="tabpanel" aria-labelledby="LoanDates-tab">
+                        <div class="LoanDates editLoan">Loan Dates</div>
+                    </div>
+                    <div class="tab-pane fade" id="LoanFacilityDetails" role="tabpanel" aria-labelledby="LoanFacilityDetails-tab"> <div class="LoanFacilityDetails editLoan">Loan Facility Details</div></div>
+                    <div class="tab-pane fade" id="LoanOther" role="tabpanel" aria-labelledby="LoanOther-tab"><div class="LoanOther editLoan">Other</div></div>
+                    <div class="tab-pane fade" id="LoanContactInfoAndSignature" role="tabpanel" aria-labelledby="LoanContactInfoAndSignature-tab">
+                        <br/>
+                        <div class="LoanContactInfoAndSignatureTop">
+                            <div class="container-fluid no-padding">
+                                <div class="row">
+                                    <div class="col-sm  text-center">
+                                        <h5>Contact Info</h5>
+                                    </div>
+                                    <div class="col-sm  text-center">
+                                        <h5>Signatories</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <h5>Finco</h5>
+                                    </div>
+                                    <div class="col-sm">
+                                        <h5>Finco</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm">
+                                       BPOW Company Name:
+                                    </div>
+                                    <div class="col-sm">
+                                         
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="LoanContactInfoAndSignature editLoan"></div>
+                    </div>
+                    <div class="tab-pane fade" id="LoanAuthorizedPerson" role="tabpanel" aria-labelledby="LoanAuthorizedPerson-tab">
+                        <div class="LoanAuthorizedPerson editLoan">
+                            <div class="container-fluid no-padding">
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <br />
+                                        <h5>FINCO (Lender)</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                <span class="fincoAuthorizedPeronal"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                <div id="displaySelectedfincoAuthorizedPersonal"></div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button type="button" onclick="AgreementExecutorAddFinco(); return false;" class="btn btn-primary btn-sm">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm">
+                                        <div class="loansFinco">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <br />
+                                        <h5>Affiliate (Borrower)</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                <span class="affiliateAuthorizedPeronal"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm">
+                                                <div id="displaySelectedaffiliateAuthorizedPersonal"></div>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button type="button" onclick="AgreementExecutorAddAffiliate(); return false;" class="btn btn-primary btn-sm">Add</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm">
+                                        <div class="loansAffiliate">
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="LoanKeyDates" role="tabpanel" aria-labelledby="LoanKeyDates-tab">Loan Key Dates</div>
+                    <div class="tab-pane fade" id="LoanNoneStandard" role="tabpanel" aria-labelledby="LoanNoneStandard-tab">None Standard</div>
+                    <div class="tab-pane fade" id="LoanFunctionalReview" role="tabpanel" aria-labelledby="LoanFunctionalReview-tab">Functional Review</div>
+                    <div class="tab-pane fade" id="LoanRepricingDetails" role="tabpanel" aria-labelledby="LoanRepricingDetails-tab"><div class="LoanRepricingDetails editLoan"></div></div>
+                    <div class="tab-pane fade" id="LoanUploadPublish" role="tabpanel" aria-labelledby="LoanUploadPublish-tab">
+                        <br /><br />  <div class="container">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <form onSubmit="return DOCUMENT.DOCUMENTSUBMIT()"
+                                          enctype="multipart/form-data">
+                                        <input class="form-control form-control-lg" type="file" name="documentFiles" id="documentFiles" multiple>
+                                        <br /><br />
+                                        <h5>Business Function Group</h5>
+                                        <div class="showFunctionalGroups"></div>
+                                    </form>
+                                </div>
+                                <div class="col-sm-1">
+                                    <input type="submit" value="Upload" class="btn btn-primary mb-3" />
+
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="LoanFiles">files</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-11"></div>
+                        <div class="col-sm-1"> <button type="button" class="btn btn-primary" style="visibility:hidden;" id="btnSaveAgreement" onclick="fncSaveDraft(); return false;">Save</button></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="tab-pane" id="currentLoans" role="tabpanel" aria-labelledby="currentLoans-tab">
+                <div class="p-3 border bg-light"><h5>Loans</h5> <input class="form-control searchable" id="myInProgress" type="text" placeholder="Search.."></div>
+
+                <div class="currentLoans editLoan">
+
+                </div>
+
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                Select Lender <br /><br />
+                <div class="LenderLookUp" onselect='ListLoans();return false;'></div> <br /><br />
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="Info-tab" data-bs-toggle="tab" data-bs-target="#Info" type="button" role="tab" aria-controls="Info" aria-selected="true">Info</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="Repricing-tab" data-bs-toggle="tab" data-bs-target="#Repricing" type="button" role="tab" aria-controls="Repricing" aria-selected="false">Repricing</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="Drafts-tab" data-bs-toggle="tab" data-bs-target="#Drafts" type="button" role="tab" aria-controls="Drafts" aria-selected="false">Drafts</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="Demand-tab" data-bs-toggle="tab" data-bs-target="#Demand" type="button" role="tab" aria-controls="Demand" aria-selected="false">Demand Deposit and Short Term Loan & Demand Deposit</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="Term-tab" data-bs-toggle="tab" data-bs-target="#Term" type="button" role="tab" aria-controls="Term" aria-selected="false">Term Revolving Loans & Timed Deposit</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="Other-tab" data-bs-toggle="tab" data-bs-target="#Other" type="button" role="tab" aria-controls="Other" aria-selected="false">All Other</button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="Info" role="tabpanel" aria-labelledby="Info-tab">Info Information</div>
+                    <div class="tab-pane fade" id="Repricing" role="tabpanel" aria-labelledby="Repricing-tab">Repricing</div>
+                    <div class="tab-pane fade" id="Drafts" role="tabpanel" aria-labelledby="Drafts-tab">Drafts</div>
+                    <div class="tab-pane fade" id="Demand" role="tabpanel" aria-labelledby="Demand-tab"><div class="currentLoansDemandDeposit"></div></div>
+                    <div class="tab-pane fade" id="Term" role="tabpanel" aria-labelledby="Term-tab"> <div class="currentLoansTermRevolvingLoanTimedDeposit"></div>  Term Revolving Loans & Timed Deposit</div>
+                    <div class="tab-pane fade" id="Other" role="tabpanel" aria-labelledby="Other-tab">All Other</div>
+
+                </div>
+
+
+                <div class="add-here">
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="fncCloseModal();return false;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class='popup'> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="fncCloseModal();return false;">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!--Hidden fields-->
+    <div>
+        <input type='hidden' name='AGREEMENT_INTEREST_RATE_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='AGREEMENT_INTEREST_RATE_RATE_TYPE_CODE' value='INTEREST_RATE_TYPE^RATE_TYPE_CODE' />
+        <input type='hidden' name='AGREEMENT_INTEREST_RATE_CREDIT_RATING' value='CREDIT_RATING^CREDIT_RATING_CODE' />
+        <input type='hidden' name='AGREEMENT_INTEREST_RATE_LIBOR_RESET_FREQ_CODE' value='FREQUENCY^UOM_CODE' />
+        <input type='hidden' name='AGREEMENT_INTEREST_RATE_UNIT_OF_MEASURE_CODE' value='FREQUENCY^UOM_CODE' />
+        <input type='hidden' name='AGREEMENT_INTEREST_RATE_EXRATE_SOURCE_CODE' value='EXCHANGE_RATE_SOURCE^EXRATE_SOURCE_CODE' />
+        <input type='hidden' name='AGREEMENT_SPREAD_DURATION_FREQUENCY_CODE' value='FREQUENCY^UOM_CODE' />
+        <input type='hidden' name='INTEREST_RATE_PERIOD_FREQUENCY_CODE' value='FREQUENCY^UOM_CODE' />
+        <input type='hidden' name='AGREEMENT_TEXT_SUBJECT_GROUP_CODE' value='TEXT_SUBJECT_GROUP^SUBJECT_GROUP_CODE' />
+        <input type='hidden' name='AGREEMENT_TEXT_LANGUAGE_CODE' value='LANGUAGE^LANGUAGE_CODE' />
+        <input type='hidden' name='PAIRING_SEQ_TAX_RATE_COMPANY_INT_RECEIVER' value='PAIRING_TAX_RATE^COMPANY_INT_RECEIVER' />
+        <input type='hidden' name='AGREEMENT_KEY_DATE_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='PARENT_AGREEMENT_PARTICIPATION_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='PARENT_AGREEMENT_PARTICIPATION_PARTICIPATION_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='AGREEMENT_BANK_ACCOUNT_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='AGREEMENT_BANK_ACCOUNT_BANK_NUMBER' value='BANK_ACCOUNT^BANK_NUMBER' />
+        <input type='hidden' name='AGREEMENT_ENDORSEMENT_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='AGREEMENT_ENDORSEMENT_FUNCTIONAL_GROUP_CODE' value='BUSINESS_FUNCTIONAL_GROUP^FUNCTIONAL_GROUP_CODE' />
+        <input type='hidden' name='RELATED_AGREEMENT_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='TAX_TAX_USE_CODE' value='TAX_USE^TAX_USE_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_GUARANTEE_RU_INDEMNITEE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='PAIRING_TAX_RATE_COMPANY_INT_RECEIVER' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='PAIRING_TAX_RATE_COMPANY_INT_PAYER' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='OWNERSHIP_COMPANY_OWNING_COMPANY_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='OWNERSHIP_COMPANY_OWNED_COMPANY_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='AGREEMENT_EXECUTOR_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='AGREEMENT_EXECUTOR_CORPORATE_SYSTEM_USER_CODE' value='CORPORATE_SYSTEM_USER^CORPORATE_SYSTEM_USER_GUID' />
+        <input type='hidden' name='AGREEMENT_EXECUTOR_AGREEMENT_RU' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_BORROWER_RU_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_LENDER_RU_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_AGREEMENT_TYPE_CODE' value='AGREEMENT_TYPE^AGREEMENT_TYPE_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_COMM_PERIOD_LENGTH' value='AGREEMENT_SPREAD_DURATION^AGREEMENT_SPREAD_DURATION_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_LOAN_CURRENCY_CODE' value='CURRENCY^CURRENCY_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_DEPOSIT_CURRENCY_CODE' value='CURRENCY^CURRENCY_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_COMMITMENT_FEE_FREQUENCY' value='FREQUENCY^UOM_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_STEWARD_ORG_CODE' value='STEWARD_ORGANIZATION^STEWARD_ORG_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_OVERRIDE_FLAG_CODE' value='OVERRIDE_FLAG^OVERRIDE_FLAG_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_PREFERRED_JURISDICTION_CODE' value='TAX_JURISDICTION^JURISDICTION_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_AGREEMENT_CLASSIFICATION_CODE' value='AGREEMENT_CLASSIFICATION^AGREEMENT_CLASSIFICATION_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_SPREAD_UPDATE_FREQ_CODE' value='FREQUENCY^UOM_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_TREASURY_CENTER_LOCATION_CODE' value='TREASURY_CENTER_LOCATION^TREASURY_CENTER_LOCATION_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_ENDORSEMENT_STATUS_CODE' value='ENDORSEMENT_STATUS^ENDORSEMENT_STATUS_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_AGREEMENT_TEMPLATE_VERSION_CODE' value='AGREEMENT_TEMPLATE_VERSION^AGREEMENT_TEMPLATE_VERSION_CODE' />
+        <input type='hidden' name='INTERCOMPANY_AGREEMENT_SUPERSEDES_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='AGREEMENT_TEMPLATE_VERSION_AGREEMENT_TYPE_CODE' value='AGREEMENT_TYPE^AGREEMENT_TYPE_CODE' />
+        <input type='hidden' name='SEARCH_AGREEMENT_LATEST_INFO_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='SEARCH_AGREEMENT_LATEST_INFO_AGREEMENT_TYPE_CODE' value='AGREEMENT_TYPE^AGREEMENT_TYPE_CODE' />
+        <input type='hidden' name='SEARCH_AGREEMENT_LATEST_INFO_LATEST_LENDER_RU_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='SEARCH_AGREEMENT_LATEST_INFO_LATEST_BORROWER_RU_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='SEARCH_AGREEMENT_LATEST_INFO_LATEST_CHILD_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='SEARCH_AGREEMENT_LATEST_INFO_ENDORSEMENT_STATUS_CODE' value='ENDORSEMENT_STATUS^ENDORSEMENT_STATUS_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_EXTERNAL_BORROWING_AUTH_INDIVID_UNIV_LIST_MASK' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_EXTERNAL_BORROWING_STEWARD_ORG_CODE' value='STEWARD_ORGANIZATION^STEWARD_ORG_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_EXTERNAL_BORROWING_EXTENDED_TAX_TYPE_CODE' value='EXTENDED_TAX_TYPE^EXTENDED_TAX_TYPE_CODE' />
+        <input type='hidden' name='CORPORATE_SYSTEM_USER_STEWARD_ORG_CODE' value='STEWARD_ORGANIZATION^STEWARD_ORG_CODE' />
+        <input type='hidden' name='CORPORATE_SYSTEM_USER_USER_ROLE_CODE' value='USER_ROLE^USER_ROLE_CODE' />
+        <input type='hidden' name='CORPORATE_SYSTEM_USER_FUNCTIONAL_GROUP_CODE' value='BUSINESS_FUNCTIONAL_GROUP^FUNCTIONAL_GROUP_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_COMPANY_CODE' value='COMPANY^COMPANY_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_COMPANY_LEVEL_ACRONYM' value='COMPANY_LEVEL^COMPANY_LEVEL_ACRONYM' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_FINANCIAL_STATEMENT_COMPANY_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_LEGAL_ENTITY_COMPANY_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_COUNTRY_OF_INCORPORATION_CODE' value='COUNTRY^CNTRY_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_FUNCTIONAL_CURRENCY_CODE' value='CURRENCY^CURRENCY_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_TAX_REPORTING_BASIS_CODE' value='TAX_TYPE^TAX_TYPE_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_TUS_TAX_TYPE_CODE' value='TAX_CONSOLIDATION_GROUP^TAX_CONS_GRP_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_TNY_TAX_TYPE_CODE' value='TAX_CONSOLIDATION_GROUP^TAX_CONS_GRP_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_EXTENDED_TAX_TYPE_CODE' value='EXTENDED_TAX_TYPE^EXTENDED_TAX_TYPE_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_TAX_HOME_OFFICE_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_STEWARD_ORG_CODE' value='STEWARD_ORGANIZATION^STEWARD_ORG_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_BPOW_CODE' value='BPOW^BPOW_CODE' />
+        <input type='hidden' name='DATAFLEX_REPORTING_UNIT_CREDIT_RATING_CODE' value='CREDIT_RATING^CREDIT_RATING_CODE' />
+        <input type='hidden' name='BENCHMARK_INTEREST_RATE_BENCHMARK_RATE_CODE' value='BENCHMARK_RATE^BENCHMARK_RATE_CODE' />
+        <input type='hidden' name='BENCHMARK_INTEREST_RATE_CURRENCY_CODE' value='CURRENCY^CURRENCY_CODE' />
+        <input type='hidden' name='BENCHMARK_INTEREST_RATE_RATE_PERIOD_CODE' value='INTEREST_RATE_PERIOD^RATE_PERIOD_CODE' />
+        <input type='hidden' name='BENCHMARK_INTEREST_RATE_EXRATE_SOURCE_CODE' value='EXCHANGE_RATE_SOURCE^EXRATE_SOURCE_CODE' />
+        <input type='hidden' name='CURRENCY_LIBOR_BENCHMARK_LT_CODE' value='BENCHMARK_RATE^BENCHMARK_RATE_CODE' />
+        <input type='hidden' name='BPOW_SHAREHOLDER_BPOW_CODE' value='BPOW^BPOW_CODE' />
+        <input type='hidden' name='AGREEMENT_CONTACTINFO_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='AGREEMENT_CONTACTINFO_BPOW_CODE' value='BPOW^BPOW_CODE' />
+        <input type='hidden' name='AGREEMENT_SIGNATORIES_AGREEMENT_CODE' value='INTERCOMPANY_AGREEMENT^AGREEMENT_CODE' />
+        <input type='hidden' name='AGREEMENT_SIGNATORIES_BPOW_CODE' value='BPOW^BPOW_CODE' />
+        <input type='hidden' name='AGREEMENT_SIGNATORIES_AGREEMENT_RU' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='BPOW_PERSONNEL_BPOW_CODE' value='BPOW^BPOW_CODE' />
+        <input type='hidden' name='BPOW_PERSONNEL_BPOW_POSITION_CODE' value='BPOW_POSITION_ROLE^BPOW_POSITION_CODE' />
+        <input type='hidden' name='FOREX_RATE_CURRENCY_ORIGIN' value='CURRENCY^CURRENCY_CODE' />
+        <input type='hidden' name='FOREX_RATE_EXRATE_SOURCE_CODE' value='EXCHANGE_RATE_SOURCE^EXRATE_SOURCE_CODE' />
+        <input type='hidden' name='CURRENCY_TEXT_CURRENCY_CODE' value='CURRENCY^CURRENCY_CODE' />
+        <input type='hidden' name='COUNTRY_CURRENCY_CODE' value='CURRENCY^CURRENCY_CODE' />
+        <input type='hidden' name='BANK_ACCOUNT_BANK_NUMBER' value='BANK^BANK_NUMBER' />
+        <input type='hidden' name='BANK_ACCOUNT_BANK_ACCOUNT_CURRENCY_CODE' value='CURRENCY^CURRENCY_CODE' />
+        <input type='hidden' name='BANK_ACCOUNT_ACCOUNT_OWNER_RU_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='PAIRING_CORP_TAX_RATE_COMPANY_INTEREST_RECEIVER' value='PAIRING_TAX_RATE^COMPANY_INT_RECEIVER' />
+        <input type='hidden' name='PAIRING_CORP_TAX_RATE_COMPANY_INTEREST_PAYER' value='PAIRING_TAX_RATE^COMPANY_INT_PAYER' />
+        <input type='hidden' name='PAIRING_CORP_TAX_RATE_ANALYSIS_DATE' value='PAIRING_TAX_RATE^ANALYSIS_DATE' />
+        <input type='hidden' name='PAIRING_CORP_TAX_RATE_BUSINESS_DIVISION_CODE' value='BUSINESS_DIVISION^BUSINESS_DIVISION_CODE' />
+        <input type='hidden' name='BUSINESS_LINE_BUSINESS_DIVISION_CODE' value='BUSINESS_DIVISION^BUSINESS_DIVISION_CODE' />
+        <input type='hidden' name='RU_BUSINESS_LINE_DATAFLEX_REPORTING_UNIT_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='RU_BUSINESS_LINE_BUSINESS_LINE_CODE' value='BUSINESS_LINE^BUSINESS_LINE_CODE' />
+        <input type='hidden' name='BPOW_BPOW_TYPE_CODE' value='COMPANY_LEVEL^COMPANY_LEVEL_ACRONYM' />
+        <input type='hidden' name='BPOW_CNTRY_CODE_OF_FOCUS' value='COUNTRY^CNTRY_CODE' />
+        <input type='hidden' name='COUNTRY_TAX_RATE_CNTRY_CODE' value='COUNTRY^CNTRY_CODE' />
+        <input type='hidden' name='COUNTRY_TAX_RATE_TAX_CODE' value='TAX^TAX_CODE' />
+        <input type='hidden' name='COUNTRY_TAX_RATE_TAX_USE_CODE' value='TAX^TAX_USE_CODE' />
+        <input type='hidden' name='COUNTRY_TAX_RATE_TAX_USE_CODE' value='TAX_USE^TAX_USE_CODE' />
+        <input type='hidden' name='BANK_BANK_CNTRY_CODE' value='COUNTRY^CNTRY_CODE' />
+        <input type='hidden' name='RU_CREDIT_RATING_DATAFLEX_REPORTING_UNIT_CODE' value='DATAFLEX_REPORTING_UNIT^COMPANY_CODE' />
+        <input type='hidden' name='RU_CREDIT_RATING_CREDIT_RATING_CODE' value='CREDIT_RATING^CREDIT_RATING_CODE' />
+
+    </div>
+    <!--Toaster object-->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+            <div class="toast-header">
+                <strong class="me-auto">Info</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Hello, world!  sdfsd
+            </div>
+        </div>
+    </div>
+    <script src="https://getbootstrap.com/docs/5.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <script src="https://getbootstrap.com/docs/5.0/examples/dashboard/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+
+<html>
+<head>
+
+</head>
+<body>
+    <script>
+        "use strict";
+
+        function AJAXSubmit(oFormElement) {
+            var oReq = new XMLHttpRequest();
+            var formData = new FormData();
+            var frm = document.getElementById('uploadForm') || null;
+            if (frm) {
+                frm.action = 'https://localhost:44398/api/v1/MagnumCustom/UploadFile?agreementCode=' + document.getElementById('agreementCode').value;
+            }
+            for (var file in document.getElementById("battlePlans").files) {
+                formData.append("battlePlans", file, file.name);
+            }
+            oReq.onload = function (e) {
+                oFormElement.elements.namedItem("result").value =
+                    'Result: ' + this.status + ' ' + this.statusText;
+            };
+            oReq.open("post", oFormElement.action);
+            oReq.send(formData);
+        }
+
+        function ShowPDF() {
+            var base64 = "";
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", 'https://localhost:44399/api/v1/AGREEMENT_ENDORSEMENT?Agreement_Code=' + document.getElementById('agreementCode').value, false); // false for synchronous request
+            xmlHttp.send(null);
+
+            var arr = JSON.parse(xmlHttp.responseText);
+            for (var i = 0; i < 1; i++) {
+                var obj = arr.data[i];
+                base64 = obj.endorsement_Doc;
+            }
+
+
+            var objbuilder = '';
+            objbuilder += ('<object width="100%" height="100%" data="data:application/pdf;base64,');
+            objbuilder += (base64);
+            objbuilder += ('" type="application/pdf" class="internal">');
+            objbuilder += ('<embed src="data:application/pdf;base64,');
+            objbuilder += (base64);
+            objbuilder += ('" type="application/pdf"  />');
+            objbuilder += ('</object>');
+
+            var win = window.open("#", "_blank");
+            var title = "my tab title";
+            win.document.write('<html><title>' + title + '</title><body style="margin-top: 0px; margin-left: 0px; margin-right: 0px; margin-bottom: 0px;">');
+            win.document.write(objbuilder);
+        }
+    </script>
+    <form action="https://localhost:44399/api/v1/MagnumCustom/UploadFile?agreementCode=eew"
+          enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;"
+          method="post" id="uploadForm">
+        <input type="file" name="battlePlans" id="battlePlans" multiple>
+
+        <input class="btn" type="submit" value="Upload" />
+        <input type="text" id='agreementCode' />
+        <input class="btn" type="button" value="Show" onclick="ShowPDF();return false;" />
+
+        <div style="margin-top:15px">
+            <output name="result"></output>
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://code.jscharting.com/latest/jscharting.js"></script>
+    <script>
+        $(document).ready(function () {
+            JSC.chart("chartDiv2", {
+                type: "map",
+                mapping_base_layers: "americas",
+                series: [{ map: "world" }]
+            });
+                
+        /*
+  A weather map with icon markers at specific x,y coordinates.
+  Learn how to:
+
+    - Draw a simple country map with weather icons.
+  */
+        // JS
+        var chart = JSC.chart('chartDiv', {
+            debug: true,
+        type: 'map',
+        title_label_text: 'Australsdads',
+        legend_visible: false,
+        mapping: {
+            base: {
+            layers: 'au',
+        series_defaultPoint_color: '#ead78b'
+}
+},
+        /* Pad the map data points for separation from the chart area boundary. */
+        defaultSeries_shape_padding: 0.4,
+        series: [
+        {
+            type: 'marker',
+        color: '#6AA7EE',
+        defaultPoint: {tooltip: '%name', marker_size: 40 },
+        points: [
+        {
+            x: 118.14993851823061,
+        y: -24.782684974059542,
+        name: 'Western Australia',
+        marker_type: 'weather/cloud'
+},
+        {
+            x: 132.5924172073684,
+        y: -15.05154376351808,
+        name: 'Northern Territory',
+        marker_type: 'weather/downpour'
+},
+        {x: 146.1031230778522, y: -23.5073395218311, name: 'Queensland', marker_type: 'weather/variable-sun' },
+        {
+            x: 132.82536041203193,
+        y: -29.54730327628283,
+        name: 'South Australia',
+        marker_type: 'weather/variable-sun'
+},
+        {x: 150.99493037578594, y: -30.354629503037064, name: 'New South Wales', marker_type: 'weather/sun' },
+        {x: 142.14308859857246, y: -35.72116674540866, name: 'Victoria', marker_type: 'weather/sun' },
+        {x: 147.3843107035015, y: -41.886413593848594, name: 'Tasmania', marker_type: 'weather/variable-sun' }
+        ]
+}
+        ]
+}); 
+
+            var chart = new JSC.Chart("targetDiv", {
+                type: "calendar month",
+                calendar_range: ["1/1/19", "1/31/19"],
+                defaultPoint: {
+                    //Each point will list eventInfo details by default.
+                    //The '%name' token below identifies the cell with day of month if a month view.
+                    label_text: "%name <br/> %eventInfo",
+                    //Make cells without eventInfo blank.
+                    attributes_eventInfo: ""
+                },
+                series: [
+                    {
+                        points: [
+                            {
+                                //The point date property as an array indicates a start/end time
+                                date: ["1/3/19", "1/5/19"],
+                                color: "lightgreen",
+                                attributes: {
+                                    eventInfo: ["-Traveling out of state<br/>"]
+                                }
+                            },
+                            {
+                                date: ["1/3/19 12:00", "1/3/19 13:00"],
+                                attributes: {
+                                    eventInfo: ["-Meet Client<br/>"]
+                                }
+                            }
+                        ]
+                    }
+                ]
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="chartDiv" style="max-width: 740px;height: 480px;margin: 0px auto;"></div>
+    <div id="targetDiv" class="targetDiv"  style="max-width: 740px;height: 480px;margin: 0px auto;"></div>
+
+    <div id="chartDiv2" class="chartDiv2"  style="max-width: 740px;height: 480px;margin: 0px auto;"></div>
+
+</body>
+</html>
